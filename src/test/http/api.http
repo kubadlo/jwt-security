@@ -3,11 +3,9 @@ POST http://localhost:8080/api/authenticate?username=user&password=password
 
 ### Public API
 GET http://localhost:8080/api/public
-Accept: text/plain
 
 ### Private API
 GET http://localhost:8080/api/private
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzZWN1cmUtYXBpIiwiYXVkIjoic2VjdXJlLWFwcCIsInN1YiI6InVzZXIiLCJleHAiOjE1NDgyNDI1ODksInJvbCI6WyJST0xFX1VTRVIiXX0.GzUPUWStRofrWI9Ctfv2h-XofGZwcOog9swtuqg1vSkA8kDWLcY3InVgmct7rq4ZU3lxI6CGupNgSazypHoFOA
-Accept: text/plain
 
 ###

@@ -11,7 +11,7 @@ public class SpringSecurityJwtExampleApplicationTests {
 
 	@Test
 	public void contextLoads() {
+	    // Just check if Spring context is created
 	}
-
 }
 

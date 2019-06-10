@@ -4,6 +4,7 @@ import com.jakublesko.jwtsecurity.constants.SecurityConstants;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -58,6 +59,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             .claim("rol", roles)
             .compact();
 
+        response.addHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, SecurityConstants.TOKEN_HEADER);
         response.addHeader(SecurityConstants.TOKEN_HEADER, SecurityConstants.TOKEN_PREFIX + token);
     }
 }

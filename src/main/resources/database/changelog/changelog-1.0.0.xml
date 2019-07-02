@@ -17,4 +17,30 @@
 
         <loadData tableName="user_account" separator=";" file="classpath:database/data/user_account.csv"/>
     </changeSet>
+
+    <changeSet id="1.0.0-refresh_token" author="Jakub Leško">
+        <createTable tableName="refresh_token">
+            <column name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="token" type="VARCHAR(180)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="issued_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiration_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_account_id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="refresh_token"
+                                 baseColumnNames="user_account_id"
+                                 constraintName="fk_user_account_token"
+                                 referencedTableName="user_account"
+                                 referencedColumnNames="id"/>
+    </changeSet>
 </databaseChangeLog>

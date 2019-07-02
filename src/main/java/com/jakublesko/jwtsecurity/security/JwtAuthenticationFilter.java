@@ -1,6 +1,7 @@
 package com.jakublesko.jwtsecurity.security;
 
 import com.jakublesko.jwtsecurity.constants.SecurityConstants;
+import com.jakublesko.jwtsecurity.service.UserAccountService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -21,8 +22,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    private final UserAccountService userAccountService;
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
+                                   UserAccountService userAccountService) {
         this.authenticationManager = authenticationManager;
+        this.userAccountService = userAccountService;
 
         setFilterProcessesUrl(SecurityConstants.AUTH_LOGIN_URL);
     }
@@ -48,16 +53,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         var signingKey = SecurityConstants.JWT_SECRET.getBytes();
 
-        var token = Jwts.builder()
+        var jwtToken = Jwts.builder()
             .signWith(Keys.hmacShaKeyFor(signingKey), SignatureAlgorithm.HS512)
-            .setHeaderParam("typ", SecurityConstants.TOKEN_TYPE)
-            .setIssuer(SecurityConstants.TOKEN_ISSUER)
-            .setAudience(SecurityConstants.TOKEN_AUDIENCE)
+            .setHeaderParam("typ", SecurityConstants.JWT_TOKEN_TYPE)
+            .setIssuer(SecurityConstants.JWT_TOKEN_ISSUER)
+            .setAudience(SecurityConstants.JWT_TOKEN_AUDIENCE)
             .setSubject(user.getUsername())
-            .setExpiration(new Date(System.currentTimeMillis() + 864000000))
+            .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.JWT_TOKEN_EXPIRATION))
             .claim("rol", roles)
             .compact();
 
-        response.addHeader(SecurityConstants.TOKEN_HEADER, SecurityConstants.TOKEN_PREFIX + token);
+        var refreshToken = userAccountService.setRefreshToken(user.getUsername());
+
+        response.addHeader(SecurityConstants.JWT_TOKEN_HEADER, SecurityConstants.JWT_TOKEN_PREFIX + jwtToken);
+        response.addHeader(SecurityConstants.REFRESH_TOKEN_HEADER, refreshToken);
     }
 }

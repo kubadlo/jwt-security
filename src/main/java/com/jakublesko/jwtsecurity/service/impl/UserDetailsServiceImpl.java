@@ -1,15 +1,14 @@
 package com.jakublesko.jwtsecurity.service.impl;
 
-import java.util.Collections;
-
 import com.jakublesko.jwtsecurity.repository.UserRepository;
-
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -21,15 +20,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         return userRepository
             .findByUsernameIgnoreCase(username)
-            .map(user -> {
-                return new User(
-                    user.getUsername(),
-                    user.getPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
-            })
+            .map(user -> new User(
+                user.getUsername(),
+                user.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))))
             .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 }
